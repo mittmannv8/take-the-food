@@ -1,0 +1,27 @@
+$primary-blue: #fea47f;
+$primary-dark: #0c0f0a;
+$arena-border: #fbff12;
+
+// reset
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+
+  padding: 10px;
+
+  background-color: $primary-dark;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+canvas {
+  border: 2px solid $arena-border;
+}
