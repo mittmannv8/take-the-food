@@ -1,9 +1,7 @@
-$primary-blue: #fea47f;
-$primary-dark: #0c0f0a;
-$arena-border: #fbff12;
+@import "variables";
 
 // reset
-* {
+  * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
@@ -24,4 +22,5 @@ body {
 
 canvas {
   border: 2px solid $arena-border;
+  background-color: $arena-color;
 }

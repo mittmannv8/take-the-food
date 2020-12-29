@@ -1,0 +1,15 @@
+{
+  "colors": {
+    "player": "#ee595e",
+    "enemy": "#8f9ca3"
+  },
+  "arena": {
+    "width": 600,
+    "height": 600,
+    "spot": 20
+  },
+  "network": {
+    "host": "localhost:8085",
+    "protocol": "ws"
+  }
+}

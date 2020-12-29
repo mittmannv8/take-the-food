@@ -1,36 +1,54 @@
-const SIZE = 20;
+import { arena } from "./config.json";
+import Observer from "./observerInterface";
 
-export class Player {
-  constructor(x = 0, y = 0, color = "#41EAD4") {
+export class Player extends Observer {
+  constructor({ id = null, position = { x: 0, y: 0 }, color = null } = {}) {
+    super();
+    this.listeners = {};
+    this.id = id;
     this.color = color;
-    this.x = x;
-    this.y = y;
+
+    this.position = position;
   }
 
-  setArena(arena) {
-    this.arena = arena;
+  plugJoystick(joystick) {
+    joystick.on("up", () => this.move("up"));
+    joystick.on("down", () => this.move("down"));
+    joystick.on("left", () => this.move("left"));
+    joystick.on("right", () => this.move("right"));
   }
 
   draw(ctx) {
+    const { x, y } = this.position;
     ctx.fillStyle = this.color;
-    ctx.rect(this.x, this.y, SIZE, SIZE);
+    ctx.beginPath();
+    ctx.rect(x, y, arena.spot, arena.spot);
     ctx.fill();
   }
 
   move(direction) {
+    let changed = false;
     switch (direction) {
       case "up":
-        this.y = Math.max(0, this.y - SIZE);
+        this.position.y = Math.max(0, this.position.y - arena.spot);
+        changed = true;
         break;
       case "down":
-        this.y = Math.min(this.arena?.height - SIZE, this.y + SIZE);
+        this.position.y = Math.min(arena.height - arena.spot, this.position.y + arena.spot);
+        changed = true;
         break;
       case "left":
-        this.x = Math.max(0, this.x - SIZE);
+        this.position.x = Math.max(0, this.position.x - arena.spot);
+        changed = true;
         break;
       case "right":
-        this.x = Math.min(this.arena?.width - SIZE, this.x + SIZE);
+        this.position.x = Math.min(arena.width - arena.spot, this.position.x + arena.spot);
+        changed = true;
         break;
+    }
+
+    if (changed) {
+      this.dispatchEvent("move", { ...this.position });
     }
   }
 }

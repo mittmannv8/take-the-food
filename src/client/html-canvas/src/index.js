@@ -1,5 +1,4 @@
 import { Game } from "./game";
-
-import "./styles.scss";
+import "./styles/styles.scss";
 
 new Game();
