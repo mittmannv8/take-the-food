@@ -1,5 +1,10 @@
 @import "variables";
 
+@font-face {
+  font-family: "8bit";
+  src: url("../../assets/8bit.ttf") format("truetype");
+}
+
 // reset
   * {
   padding: 0;
@@ -18,6 +23,67 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#playButton:focus {
+  border: none;
+}
+
+#username {
+  width: 100%;
+  font-family: "8bit";
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+  background: transparent;
+  // border: none;
+  color: $dark-color;
+  border: 1px solid $dark-color;
+  outline: none;
+}
+
+#playButton::after {
+  content: "";
+  display: inline-block;
+  width: 100%;
+}
+
+#playButton {
+  margin-top: 5rem;
+  text-align: justify;
+  outline: none;
+  cursor: pointer;
+  font-family: "8bit";
+  // border: none;
+  font-size: 4rem;
+  background: linear-gradient(#DD2D4A, #FFA400);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  animation: blink 3s linear infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.3;
+  }
 }
 
 canvas {

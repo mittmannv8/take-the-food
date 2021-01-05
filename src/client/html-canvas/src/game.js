@@ -1,17 +1,23 @@
 import { Joystick } from "./joystick";
 import { Network } from "./network";
-import { Player } from "./player";
+import { Fruit, Player } from "./player";
 
-import { colors, arena, network as networkConfig } from "./config.json";
+import { DEBUG, colors, arena, network as networkConfig } from "./config.json";
+import { Sound } from "./audio";
 
 export class Game {
-  constructor() {
+  constructor(username) {
     this.player = new Player();
     this.players = [];
+    this.fruit = undefined;
 
     // Create the canvas
     this.canvas = document.createElement("canvas");
     this.ctx = this.canvas.getContext("2d");
+
+    const sound = new Sound(
+      "https://freesound.org/data/previews/368/368691_4930962-lq.mp3"
+    );
 
     // set arena size
     this.canvas.width = arena.width;
@@ -21,13 +27,21 @@ export class Game {
 
     this.network = new Network(networkConfig);
     this.network.on("open", () => {
-      this.network.send("join", { data: { nickname: "Cleiton" } });
+      this.network.send("join", { nickname: username });
     });
     this.network.on("joined", data => {
+      sound.play();
+
       const { player } = data;
       this.configurePlayer(player);
     });
-    this.network.on("update", data => this.updatePlayers(data));
+
+    this.network.on("update-players", player => this.updatePlayers(player));
+    this.network.on("update-fruit", fruit => this.updateFruit(fruit));
+
+    this.collisionSound = new Sound(
+      "https://freesound.org/data/previews/391/391659_7368738-lq.mp3"
+    );
 
     requestAnimationFrame(() => this.draw());
   }
@@ -35,9 +49,28 @@ export class Game {
   configurePlayer(player) {
     this.player = new Player({ ...player, color: colors.player });
     this.player.plugJoystick(new Joystick());
-    this.player.on("move", position =>
-      this.network.send("changed-position", position)
-    );
+    this.player.on("move", position => {
+      this.checkCollision();
+      this.network.send("changed-position", position);
+    });
+  }
+
+  /**
+   * This method does not apply the score because that rule is computed in
+   * server-side. Its responsibility regards to apply sounds and effects since
+   * the server response might has lag so the player experience might be strange.
+   */
+  checkCollision() {
+    if (
+      this.player.position.x === this.fruit.position.x &&
+      this.player.position.y === this.fruit.position.y
+    ) {
+      this.collisionSound.play();
+    }
+  }
+
+  updateFruit(fruit) {
+    this.fruit = new Fruit(fruit);
   }
 
   updatePlayers(players) {
@@ -49,12 +82,17 @@ export class Game {
   }
 
   draw() {
+    console.log("draw player");
     this.ctx.clearRect(0, 0, arena.width, arena.height);
     this.ctx.beginPath();
 
+    this.fruit && this.fruit.draw(this.ctx);
+
     // TODO: remove this text
-    this.ctx.font = "20px Georgia";
-    this.ctx.fillText(this.player.id, 0, 20);
+    if (DEBUG) {
+      this.ctx.font = "20px Georgia";
+      this.ctx.fillText(this.player.nickname, 0, 20);
+    }
 
     this.players.forEach(player => {
       player.draw(this.ctx);
