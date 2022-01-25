@@ -20,6 +20,7 @@ The game follows these requirements:
 - Cross platform
 - Real-time (using websocket)
 - Must have multiple private/public arenas
+- Users must wait in a waiting room while the arena has the minimun number of players
 - Must allow the player create/join private arenas
 - The game logic must be in the server-side
 - The client side must show the players score
