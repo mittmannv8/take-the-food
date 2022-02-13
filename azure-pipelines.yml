@@ -3,7 +3,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-- feat/fast-api-server
+  branches:
+   include:
+    - feat/fast-api-server
+  batch: false
 
 resources:
 - repo: self
